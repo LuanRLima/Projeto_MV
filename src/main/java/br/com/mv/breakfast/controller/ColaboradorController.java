@@ -27,7 +27,7 @@ public class ColaboradorController {
 	@Autowired
 	private ItemService itemService;
 	
-	@RequestMapping(path ="/find-all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value ="/find-all")
 	public ResponseEntity<?> findAll() {
 		try {
 			return new ResponseEntity(service.findAll(), HttpStatus.OK);

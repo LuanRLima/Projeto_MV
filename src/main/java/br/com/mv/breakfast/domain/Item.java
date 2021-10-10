@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.type.ForeignKeyDirection;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,7 @@ public class Item implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
+	@ManyToOne
 	private Colaborador colaborador;
 }
