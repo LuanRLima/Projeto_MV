@@ -2,6 +2,7 @@ package br.com.mv.breakfast.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,5 +40,6 @@ public class Item implements Serializable{
 	private String nome;
 	@JsonBackReference
 	@ManyToOne
+	@JoinColumn(name = "colaborador_id", referencedColumnName = "id")
 	private Colaborador colaborador;
 }

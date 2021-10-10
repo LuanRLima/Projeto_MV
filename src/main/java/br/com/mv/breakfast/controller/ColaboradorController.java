@@ -1,9 +1,12 @@
 package br.com.mv.breakfast.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.mv.breakfast.domain.Colaborador;
-import br.com.mv.breakfast.domain.Item;
 import br.com.mv.breakfast.service.ColaboradorService;
 import br.com.mv.breakfast.service.ItemService;
 
@@ -24,6 +26,7 @@ public class ColaboradorController {
 
 	@Autowired
 	private ColaboradorService service;
+	
 	@Autowired
 	private ItemService itemService;
 	
@@ -64,23 +67,11 @@ public class ColaboradorController {
 	}
 	
 	@PostMapping(value = "/update/{id}")
+	@Transactional
 	public ResponseEntity<?> update(@PathVariable long id, @Validated @RequestBody Colaborador colaborador) {
-		return service.findById(id).map(record -> {
-			record.setCpf(colaborador.getCpf());
-			record.setNome(colaborador.getNome());
-			record.setListaItem(colaborador.getListaItem());
-
-			Colaborador update = service.save(record);
-			
-			if(record.getListaItem() != null)
-				record.getListaItem().forEach(item -> {
-					item.setColaborador(update);
-					this.itemService.save(item);
-				});
-			
-			return ResponseEntity.ok().body(update);
-		}).orElse(ResponseEntity.notFound().build());
+		var response = ResponseEntity.ok().body(this.service.update(id, colaborador));
+		this.itemService.deleteByColaboradorIdIsNull();
 		
-	}
-	
+		return response;
+	}	
 }
