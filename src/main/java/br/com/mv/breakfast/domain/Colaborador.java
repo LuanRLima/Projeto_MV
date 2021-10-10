@@ -1,11 +1,23 @@
 package br.com.mv.breakfast.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.lang.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,11 +30,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(schema = "mv_sistemas")
-public class Colaborador {	
+public class Colaborador implements Serializable{
+	
+	private static final long serialVersionUID = 3096811343325991454L;
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String cpf;
 	private String nome;
-	@OneToMany
+	@OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Item> listaItem;
 }
